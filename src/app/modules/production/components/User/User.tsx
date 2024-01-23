@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
 import { Api_Endpoint, deleteItem, fetchDocument, fetchUsers, postItem, updateItem } from '../../../../services/ApiCalls'
-import { AUTH_LOCAL_STORAGE_KEY, useAuth } from '../../../auth'
+import { useAuth } from '../../../auth'
 import axios from 'axios'
 
 const User = () => {
@@ -48,7 +48,6 @@ const User = () => {
 
   const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
     onSuccess: (data) => {
-      // queryClient.setQueryData(['users', tempData], data);
       loadData()
     },
     onError: (error) => {
@@ -166,7 +165,7 @@ const User = () => {
       setGridData(allUsers?.data)
       setBeforeSearch(allUsers?.data)
     
-  }, [])
+  }, [allUsers?.data])
 
   const dataByID = gridData?.filter((user: any) => {
     return user.id !== 42
@@ -244,15 +243,14 @@ const User = () => {
       }
       console.log(item.data)
       postData(item)
+      setLoading(false)
   })
 
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
     onSuccess: (data) => {
-      // queryClient.setQueryData(['users', tempData], data);
       reset()
       setTempData({})
       queryClient.invalidateQueries('users')
-      // loadData()
       setIsModalOpen(false)
     },
     onError: (error) => {

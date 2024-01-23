@@ -142,9 +142,6 @@ const UserCompany = () => {
         return setUserID(item.userId)
       }
     })
-
-    // console.log("Before userID:",param.id);
-    // console.log(userID);
     return userID
   }
 
@@ -201,7 +198,6 @@ const UserCompany = () => {
         },
         url: endpoint
       }
-      console.log(item.data)
       postData(item)
     }else{
       message.error('Company already assigned')
