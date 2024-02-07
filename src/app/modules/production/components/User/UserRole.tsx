@@ -6,14 +6,13 @@ import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
 import { deleteItem, fetchDocument, postItem } from '../../../../services/ApiCalls'
+import { getFieldName } from '../../../../services/CommonSevices'
 
 
 const UserRole = () => {
   const [gridData, setGridData] = useState<any>([])
   const [beforeSearch, setBeforeSearch] = useState([])
   const [loading, setLoading] = useState(false)
-  const [searchText, setSearchText] = useState('')
-  let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [img, setImg] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -30,6 +29,8 @@ const UserRole = () => {
     const {data:allUsers} = useQuery('users',() => fetchDocument('Users'), {cacheTime:5000})
     const {data:roles} = useQuery('roles',() => fetchDocument('Roles'), {cacheTime:5000})
   
+
+    // console.log("allUserRoles", allUserRoles?.data);
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -66,9 +67,10 @@ const UserRole = () => {
   const columns: any = [    
     {
       title: 'Role Name',
-      key: 'roleId',
+
       render:(i:any)=>{
-        return getRoleName(i.roleId)
+        console.log("i", i);
+        return getFieldName({fieldId: i.roleId, fieldData: roles?.data})
       },
       sorter: (a: any, b: any) => {
         if (a.roleId > b.roleId) {
@@ -87,9 +89,6 @@ const UserRole = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          {/* <Link to="#">
-            <span className='btn btn-light-danger btn-sm'>Remove</span>
-          </Link> */}
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
           Remove
           </a>
@@ -113,6 +112,7 @@ const UserRole = () => {
     setLoading(true)
     try {
       const response = await fetchDocument('UserRoles')
+      
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -129,7 +129,7 @@ const UserRole = () => {
     return newName
  }
 
- console.log("User ID from Roles",userID);
+//  console.log("User ID from Roles", userID);
 
    // get user id from userApplications
    const getUserID = (id:any) => {
