@@ -1,21 +1,14 @@
-import { Button, Input, Modal, Space, Table } from 'antd'
+import { Input, Space, Table } from 'antd'
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { useNavigate, useParams } from 'react-router-dom'
-import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
-import { deleteItem, fetchDocument, postItem, updateItem } from '../../../../services/ApiCalls'
+import {  useQuery } from 'react-query'
+import { KTCardBody } from '../../../../../_metronic/helpers'
+import {fetchData} from '../../../../services/ApiCalls'
 
 const UserActivity = () => {
   const [gridData, setGridData] = useState<any>([])
   const [beforeSearch, setBeforeSearch] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [searchText, setSearchText] = useState('')
-  let [filteredData] = useState([])
 
-
-
-  const {data: UserActivity, isLoading} = useQuery('userActivity',() => fetchDocument('UserActivity'), {cacheTime:5000})
+  const {data: UserActivity, isLoading} = useQuery('userActivity',() => fetchData('UserActivity'), {cacheTime:5000})
   
   const columns: any = [
     {
@@ -101,11 +94,11 @@ const UserActivity = () => {
     // },
   ]
   const loadData = async () => {
-    setLoading(true)
+    // setLoading(true)
     try {
-      const response = await fetchDocument('UserActivity')
+      const response = await fetchData('UserActivity')
       setGridData(response.data)
-      setLoading(false)
+      // setLoading(false)
     } catch (error) {
       console.log(error)
     }

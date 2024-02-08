@@ -4,24 +4,18 @@ import { useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
-import { Api_Endpoint, deleteItem, fetchDocument, postItem, updateItem } from '../../../../services/ApiCalls'
+import { Api_Endpoint} from '../../../../services/ApiCalls'
 
 const Applications = () => {
   const [gridData, setGridData] = useState<any>([])
   const [beforeSearch, setBeforeSearch] = useState([])
   const [loading, setLoading] = useState(false)
-  const [searchText, setSearchText] = useState('')
-  let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [img, setImg] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { register, reset, handleSubmit } = useForm()
-  const param: any = useParams();
-  const navigate = useNavigate();
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
 
-  const {data:allApplications} = useQuery('applications',() => fetchDocument('Applications'), {cacheTime:5000})
 
   const showModal = () => {
     setIsModalOpen(true)

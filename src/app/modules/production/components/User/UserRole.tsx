@@ -5,12 +5,13 @@ import { useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
-import { deleteItem, fetchDocument, postItem } from '../../../../services/ApiCalls'
 import { getFieldName } from '../../../../services/CommonSevices'
+import {useGlobalCalls} from '../../../../services/ApiCalls'
 
 
 const UserRole = () => {
   const [gridData, setGridData] = useState<any>([])
+  const {actions} = useGlobalCalls()
   const [beforeSearch, setBeforeSearch] = useState([])
   const [loading, setLoading] = useState(false)
   const [submitLoading, setSubmitLoading] = useState(false)
@@ -23,12 +24,10 @@ const UserRole = () => {
   const queryClient = useQueryClient()
   const [userID, setUserID] = useState<any>("")
 
-
-    const {data:allUserRoles} = useQuery('userRoles',() => fetchDocument('UserRoles'), {cacheTime:5000})
+    const {data:allUserRoles} = useQuery('userRoles',() => actions.('UserRoles'), {cacheTime:5000})
     const {data: userCompanies} = useQuery('userCompanies',() => fetchDocument('UserCompanies'), {cacheTime:5000})
     const {data:allUsers} = useQuery('users',() => fetchDocument('Users'), {cacheTime:5000})
     const {data:roles} = useQuery('roles',() => fetchDocument('Roles'), {cacheTime:5000})
-  
 
     // console.log("allUserRoles", allUserRoles?.data);
 

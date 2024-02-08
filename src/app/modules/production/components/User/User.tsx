@@ -4,23 +4,26 @@ import { useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
-import { Api_Endpoint, deleteItem, fetchDocument, fetchUsers, postItem, updateItem } from '../../../../services/ApiCalls'
+import {
+  Api_Endpoint,
+  CustomData, CustomPostDto,
+  deleteData,
+  fetchData,
+  IData,
+  postData,
+  updateData,
+} from '../../../../services/ApiCalls'
 import { useAuth } from '../../../auth'
 import axios from 'axios'
+import {UserType} from '../../../GlobalHelpers/GlobalModel'
 
 const User = () => {
   const [gridData, setGridData] = useState<any>([])
   const [beforeSearch, setBeforeSearch] = useState([])
   const [loading, setLoading] = useState(false)
-  const [searchText, setSearchText] = useState('')
-  let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { register, reset, handleSubmit } = useForm()
-  const param: any = useParams();
-  const navigate = useNavigate();
-  const [test, setUserInfo] = useState<any>(null)
-  const { saveAuth, setCurrentUser } = useAuth()
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const queryClient = useQueryClient()
@@ -46,7 +49,8 @@ const User = () => {
     setTempData({ ...tempData, [event.target.name]: event.target.value });
   }
 
-  const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+  const { mutate: deleteDat, isLoading: deleteLoading } =
+    useMutation((item:CustomData<IData>)=>deleteData(item), {
     onSuccess: (data) => {
       loadData()
     },
@@ -145,7 +149,7 @@ const User = () => {
     },
   ]
 
-  const { data: allUsers } = useQuery('users', fetchUsers, { cacheTime: 5000 })
+  const { data: allUsers } = useQuery('users',()=> fetchData("users"), { cacheTime: 5000 })
 
   const loadData = async () => {
     setLoading(true)
@@ -188,7 +192,9 @@ const User = () => {
   }
 
 
-  const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
+  const {isLoading: updateLoading, mutate: updateUser} =
+    useMutation((item: CustomData<IData>) =>
+    updateData(item), {
     onSuccess: (data) => {
       // queryClient.setQueryData(['users', tempData], data);
       reset()
@@ -200,7 +206,7 @@ const User = () => {
     },
     onError: (error) => {
       console.log('update error: ', error)
-    }
+    },
   })
 
   const handleUpdate = (e: any) => {
@@ -211,7 +217,7 @@ const User = () => {
         url: 'Users',
         data: tempData
       }
-      updateData(item)
+      updateUser(item)
       console.log('update: ', item.data)
     } else {
       setLoading(false)
@@ -230,23 +236,24 @@ const User = () => {
     setLoading(true)
     const endpoint = 'Users'
     // object item to be passed down to postItem function
-      const item = {
-        data: {
-          firstName: values.firstName,
-          username: values.username,
-          password: values.password,
-          surname: values.surname,
-          email: values.email,
-          gender: values.gender,
-        },
-        url: endpoint
+    const data:UserType = {
+      firstName: values.firstName,
+      username: values.username,
+      password: values.password,
+      surname: values.surname,
+      email: values.email,
+      gender: values.gender,
+    }
+      const item : CustomPostDto<UserType> = {
+        url: endpoint,
+        data: data
       }
       console.log(item.data)
-      postData(item)
+      postUser(item)
       setLoading(false)
   })
-
-  const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+  const { mutate: postUser, isLoading: postLoading } =
+    useMutation((item:CustomPostDto<UserType>)=>postData(item), {
     onSuccess: (data) => {
       reset()
       setTempData({})
